@@ -36,22 +36,22 @@ def genetic_algorithm():
     np.random.seed(RNG_SEED)
 
     global n_generations
-    # Initial weights
+    #initial weights
     weight = np.zeros((input_size, output_size))
 
     for gen in range(generation_limit):
-        # Keep track of Returns
+        #keep track of the returns
         R = np.zeros(population_size)
 
-        # Generate noise
+        #generate noise
         N = np.random.randn(population_size, input_size, output_size)
-        # Try every set of new values and keep track of the returns
+        #try every new value set and keep track of the returns
         for j in range(population_size):
             weight_ = weight + sigma * N[j]
             R[j] = run_episode(env, weight_, False)
 
-        # Update weights on the basis of the previous runned episodes
-        # Summation of episode_weight * episode_reward
+        #update weights on the basis of the previous runned episodes
+        #summation of episode_weight * episode_reward
         weighted_weights = np.matmul(N.T, R).T
         new_weight = weight + alpha / (population_size * sigma) * weighted_weights
         weight = new_weight
