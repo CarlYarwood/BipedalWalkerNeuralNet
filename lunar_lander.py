@@ -1,7 +1,7 @@
 import gym
 import numpy as np
 import plotly
-import plotly.graph_objs as go
+import plotly.graph_objs as pl
 
 #global variable
 n_generations = 0
@@ -12,7 +12,7 @@ population_size = 100
 generation_limit = 100  #max number of generations
 steps_limit = 300  #max number of steps in a game
 sigma = 0.1  #noise standard deviation
-alpha = 0.001  #learning rate .0005 works well
+alpha = 0.0005  #learning rate .0005 and .001 works well
 
 RNG_SEED = 8
 NULL_ACTION = 0
@@ -21,14 +21,9 @@ NULL_ACTION = 0
 def create_plot():
     global plot_data
     global n_generations
-    trace = go.Scatter(
-        x=np.linspace(0, 1, n_generations),
-        y=plot_data,
-        mode='lines+markers',
-        fill='tozeroy'
-    )
+    trace = pl.Scatter(x=np.linspace(0, 1, n_generations), y=plot_data, mode='lines+markers', fill='tozeroy')
     data = [trace]
-    plotly.offline.plot({"data": data, "layout": go.Layout(title="Lunar-Lander-v2")}, filename="Lunar-Lander-v2-plot")
+    plotly.offline.plot({"data": data, "layout": pl.Layout(title="Lunar-Lander-v2")}, filename="Lunar-Lander-v2-plot")
 
 
 def genetic_algorithm():
@@ -42,7 +37,7 @@ def genetic_algorithm():
 
     global n_generations
     # Initial weights
-    W = np.zeros((input_size, output_size))
+    weight = np.zeros((input_size, output_size))
 
     for gen in range(generation_limit):
         # Keep track of Returns
@@ -52,14 +47,14 @@ def genetic_algorithm():
         N = np.random.randn(population_size, input_size, output_size)
         # Try every set of new values and keep track of the returns
         for j in range(population_size):
-            W_ = W + sigma * N[j]
-            R[j] = run_episode(env, W_, False)
+            weight_ = weight + sigma * N[j]
+            R[j] = run_episode(env, weight_, False)
 
         # Update weights on the basis of the previous runned episodes
         # Summation of episode_weight * episode_reward
         weighted_weights = np.matmul(N.T, R).T
-        new_W = W + alpha / (population_size * sigma) * weighted_weights
-        W = new_W
+        new_weight = weight + alpha / (population_size * sigma) * weighted_weights
+        weight = new_weight
 
         gen_mean = np.mean(R)
 
@@ -70,9 +65,9 @@ def genetic_algorithm():
         if gen_mean >= score_mean_requirement:
             break
 
-    print("Running final games")
+    print("Games based off generation with pop. mean score > {}".format(score_mean_requirement))
     for i in range(final_games):
-        print("episode {}, score: {}".format(i, run_episode(env, W, True)))
+        print("Episode {}, Score: {}".format(i, run_episode(env, weight, True)))
     return
 
 
@@ -102,5 +97,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    
