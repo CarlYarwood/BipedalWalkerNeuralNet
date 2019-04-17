@@ -1,19 +1,18 @@
 import gym
 import numpy as np
-from gym import wrappers
 import plotly
 import plotly.graph_objs as go
 
-# Globals
+#global variable
 n_generations = 0
 plot_data = []
 final_games = 10
-score_requirement = 50
+score_mean_requirement = 100
 population_size = 100
-generation_limit = 100  # Max number of generations
-steps_limit = 300  # Max number of steps in a game
-sigma = 0.1  # Noise standard deviation
-alpha = 0.0005  # Learning rate
+generation_limit = 100  #max number of generations
+steps_limit = 300  #max number of steps in a game
+sigma = 0.1  #noise standard deviation
+alpha = 0.001  #learning rate .0005 works well
 
 RNG_SEED = 8
 NULL_ACTION = 0
@@ -29,7 +28,7 @@ def create_plot():
         fill='tozeroy'
     )
     data = [trace]
-    plotly.offline.plot({"data": data, "layout": go.Layout(title="LunarLander")}, filename="LunarLander_plot")
+    plotly.offline.plot({"data": data, "layout": go.Layout(title="Lunar-Lander-v2")}, filename="Lunar-Lander-v2-plot")
 
 
 def genetic_algorithm():
@@ -68,7 +67,7 @@ def genetic_algorithm():
         n_generations += 1
 
         print("Generation {}, Population Mean: {}".format(gen, gen_mean))
-        if gen_mean >= score_requirement:
+        if gen_mean >= score_mean_requirement:
             break
 
     print("Running final games")
