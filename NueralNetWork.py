@@ -27,22 +27,22 @@ class NueralNetwork:
         act = 0
         if (layer == 2):
             for i in range(self.b1.size):
-                act += self.node_calc_act(1, i, observation) * who[i][pos]
+                act += self.node_calc_act(1, i, observation) * self.who[i][pos]
                 
-            act += b2[pos]
+            act += self.b2[pos]
 
             return expit(act) #scipy implementation of sigmoid funciton
             
         if (layer == 1):
             for i in range(self.b0.size):
-                act += self.node_calc_act(0, i, observation) * wih[i][pos]
+                act += self.node_calc_act(0, i, observation) * self.wih[i][pos]
 
-            return expit(act + b1[pos])
+            return expit(act + self.b1[pos])
 
         else: #input layer
-            return expit(observation[pos] + b0[pos])
+            return expit(observation[pos] + self.b0[pos])
 
-
+"""
 wih = np.random.random((4,24))
 who = np.random.random((24,2))
 b0 = np.random.random((4,))
@@ -51,3 +51,4 @@ b2 = np.random.random((2,))
 
 nn = NueralNetwork(wih,who,b0,b1,b2)
 print(nn.makeDecision([0,1,2,3]))
+"""
