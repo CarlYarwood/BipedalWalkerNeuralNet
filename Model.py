@@ -7,23 +7,25 @@ import random
 class Model():
 
     
-    def __init__(self, state_shape, num_actions, learning_rate=0.1, gamma=0.8, batch_size=50):
+    def __init__(self, state_shape, num_actions, learning_rate=0.1, gamma=0.8, batch_size=32, epsilon = 1.0, epsilon_decay = 0.995, epsilon_min = 0.01):
         self.state_shape = state_shape
         self.num_actions = num_actions
         self.learning_rate = learning_rate
         self.gamma = gamma # Reward decay
         self.batch_size = batch_size
+        self.epsilon = epsilon
+        self.epsilon_min = epsilon_min
     
         self.memory = []
 
         self.model = Sequential()
         self.model.add(Dense(32, input_shape=self.state_shape, activation='relu'))
+        self.model.add(Dense(20, activation = 'relu'))
         self.model.add(Dense(10, activation='relu'))
         self.model.add(Dense(self.num_actions, activation='linear'))
         
         self.model.compile(loss='mse',
                     optimizer=optimizers.Adam(lr=self.learning_rate))
-
     # TODO exploration vs exploitation
     def predict(self, state):
         return self.model.predict(state.reshape(1, self.state_shape[0])).flatten()
@@ -32,10 +34,24 @@ class Model():
         self.memory.append([state, action, next_state, reward, done])
 
     def replay(self):
+        	    
         batch = random.sample(self.memory, self.batch_size)
-
+        	
         for state, action, next_state, reward, done in batch:
             if done:
                 target = reward
             else:
-                target = reward # TODO im confuse
+                target = reward + self.gamma * np.amax(self.model.predixt(next_state)[0])
+                target_f = self.model.predict(state)
+                target_f[0][action] = target
+                self.model.fit(state, target_f, epochs = 1, verbose=0)
+            if self.epsilon > self.epsilon_min:
+               self.epsilon *= self.epsion_decay
+               
+               
+    def act(self, state):
+        if np.random.rand() <= self.epsilon:
+            return random.randrange(self.num_actions)
+        act_values = self.modle.predict(state)
+        return np.argmax(act_values[0])
+            
