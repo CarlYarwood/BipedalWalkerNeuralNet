@@ -20,6 +20,8 @@ for e in range(NUM_EPISODES):
         state = state.reshape(1, state_size)
         model.remember(old_state, action, state, reward, done)
 
+        
+
         if done:
             break
         # env.step(env.action_space.sample()) # take a random action
