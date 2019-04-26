@@ -12,8 +12,9 @@ model = Model(state_shape = env.observation_space.shape, num_actions = env.actio
 for e in range(NUM_EPISODES):
     state = env.reset().reshape(1, state_size)
     for t in range(500):
-        if e > 200 and e % 5 == 0: env.render()
+        # if e > 700 and e % 5 == 0: env.render()
         action = model.act(state)
+
         old_state = state
         state, reward, done, info = env.step(action)
         state = state.reshape(1, state_size)
@@ -24,4 +25,5 @@ for e in range(NUM_EPISODES):
         # env.step(env.action_space.sample()) # take a random action
     model.replay()
     print(f"Episode {e} lasted {t} frames. epsilon: {model.epsilon}.")
+
 env.close()
