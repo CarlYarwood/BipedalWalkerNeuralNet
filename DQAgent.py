@@ -66,7 +66,7 @@ if __name__ == "__main__":
     agent = DQNAgent(state_size, action_size)
     # agent.load("./save/cartpole-dqn.h5")
     done = False
-    batch_size = 32
+    batch_size = 50
 
     for e in range(EPISODES):
         state = env.reset()
@@ -85,5 +85,5 @@ if __name__ == "__main__":
                 print("episode: {}/{}, score: {}, e: {:.2}"
                       .format(e, EPISODES, sume, agent.epsilon))
                 break
-            if len(agent.memory) > batch_size:
-                agent.replay(batch_size)
+        if len(agent.memory) > batch_size:
+            agent.replay(batch_size)
