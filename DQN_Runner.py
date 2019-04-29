@@ -5,9 +5,9 @@ import gym
 from DQN import DQN
 import numpy as np
 
-NUM_EPISODES = 500
+NUM_EPISODES = 200
 MAX_TIMESTEPS = 200
-NUM_TRIALS = 500
+NUM_TRIALS = 10
 NUM_RANDOM_EPISODES = 100
 
 def main():
@@ -23,7 +23,6 @@ def main():
         print("Error, will not save weights if in testing mode!")
         quit()
 
-    training = False
     render = False
     env = gym.make('CartPole-v1')
     state_size = env.observation_space.shape[0]
@@ -32,7 +31,7 @@ def main():
 
     if not args.test:
         scores = []
-        scores_file = open("rl_scores.csv", 'w')
+        scores_file = open("dqn_scores.csv", 'w')
 
         for episode in range(NUM_EPISODES):
             scores_file.write(f"Episode {episode}, ")
@@ -41,6 +40,7 @@ def main():
 
     # run a number of trials so we can get an average of performance
     for trial_num in range(NUM_TRIALS):
+        training = False
         state = env.reset().reshape(1, state_size)
         model = DQN(env, load_weights=args.test, starting_epsilon=0.0 if args.test else 1.0)
         for e in range(NUM_EPISODES + NUM_RANDOM_EPISODES):
@@ -83,6 +83,7 @@ def main():
                 scores_file.write(f"{score},")
 
             scores_file.write("\n")
+            scores_file.flush()
 
             scores = []
 

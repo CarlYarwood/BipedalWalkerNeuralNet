@@ -132,10 +132,10 @@ class DQN():
         """
         if score >= self.best_score:
             self.best_score = score
-            self.model.save_weights("rl_model.h5")
+            self.model.save_weights("dqn_model.h5")
             return True
 
         return False
 
     def load_weights(self):
-        self.model.load_weights("rl_model.h5")
+        self.model.load_weights("dqn_model.h5")
