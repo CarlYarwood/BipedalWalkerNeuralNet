@@ -11,7 +11,7 @@ MR = 100 # Mutation Rate (MR / 100)%
 
 
 L0 = 4 # number of input nodes
-L1 = 48 # number first hidden layer nodes
+L1 = 24 # number first hidden layer nodes
 L2 = 2  # number output nodes
 
 """
