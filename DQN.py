@@ -5,8 +5,6 @@ from collections import deque
 import numpy as np
 import random
 
-# TODO Documentation
-
 class DQN():
     """
     Implements a deep Q learning network, based on the paper released by Google:
