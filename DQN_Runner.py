@@ -2,10 +2,10 @@
  
 import argparse
 import gym
-from DQN import DQN
 import numpy as np
+from DQN import DQN
 
-NUM_EPISODES = 200
+NUM_EPISODES = 400
 MAX_TIMESTEPS = 200
 NUM_TRIALS = 10
 NUM_RANDOM_EPISODES = 100

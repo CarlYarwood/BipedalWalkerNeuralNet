@@ -60,8 +60,7 @@ class DQN():
         """
 
         model = Sequential()
-        model.add(Dense(64, input_shape=self.state_shape, activation='relu'))
-        model.add(Dense(32, activation='relu'))
+        model.add(Dense(24, input_shape=self.state_shape, activation='relu'))
         model.add(Dense(self.num_actions, activation='linear'))
         
         model.compile(loss='mse',
