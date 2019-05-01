@@ -6,13 +6,18 @@ import gym
 
 POPSIZE = 64
 MAX_TIMESTEPS = 200
-TRIALS = 300 # number of trials
+MAX_GEN = 200
+TRIALS = 4 # number of trials
 MR = 100 # Mutation Rate (MR / 100)%
+SEED = 3
 
 
 L0 = 4 # number of input nodes
-L1 = 48 # number first hidden layer nodes
+L1 = 24 # number first hidden layer nodes
 L2 = 2  # number output nodes
+
+
+np.random.seed(SEED)
 
 """
 Randomly initialize weights and biases for a population of nueral networks
@@ -63,13 +68,24 @@ Second element is the average fitness score.
 """
 def evaluateGeneration(population):
     selectionPool = []
-    avg = 0
 
+    #avg = 0
+
+    best = [population[0], 0]
+    
     threshhold = 9
     env = gym.make('CartPole-v1')
+    
     for i in range(len(population)):
+        
         fitness = evaluateFitness(population[i], env)
-        avg += fitness
+
+        if (fitness > best[1]):
+            best[0] = population[i]
+            best[1] = fitness
+        
+        #f.write(f"{fitness}, ")
+        #avg += fitness
         #print("Network {} earned fitness score of {}".format(i, fitness))
         if (fitness > threshhold):
             for j in range(fitness - threshhold):
@@ -77,9 +93,9 @@ def evaluateGeneration(population):
                 
     env.close()
 
-    avg /= len(population)
+    #avg /= len(population)
 
-    return [selectionPool, avg]
+    return [selectionPool, best]
 
 """
 Creates a new generation by randomly selecting two parents fromthe selectionPool
@@ -103,36 +119,35 @@ Initialize a population, evaluate and generate the next generation for a set
 number of generations
 """
 def train():
+    
     pop = initializePopulation()
-
-    for i in range(TRIALS):
+    env = gym.make('CartPole-v1')
+    
+    for i in range(MAX_GEN):
         evaluationResults = evaluateGeneration(pop)
         pool = evaluationResults[0]
-        avgFitness = evaluationResults[1]
+        demoNet = evaluationResults[1]
 
-        print("Gen {} scored an average fitness of {}".format(i, avgFitness))
-        
-        pop = buildNextGen(pool)
-
-        
-
-        """
-        env = gym.make('CartPole-v1')
         observation = env.reset()
-        for t in range(200):
+        print(f"Rendering best of Gen {i}")
+        x = 0
+        for t in range(MAX_TIMESTEPS):
             env.render()
             action = pool[-1].makeDecision(observation)
             observation, reward, done, info = env.step(action)
             if done:
+                x = 1
                 print("Score: {}".format(t))
                 print()
                 break
-            if (t == 199):
-                reached_goal = 1
-                print()
-                print("Goal state reached after {} generations".format(i))
-        env.close()
-        """
+        if (x == 0):
+            print("Score: 200")
+            print()
+            break
+            
+        
+        pop = buildNextGen(pool)
+    env.close()
 
 
 """
@@ -150,7 +165,7 @@ def mate(nn1, nn2):
     for i in range(wih.shape[0]):
         for j in range(wih.shape[1]):
             if (random.randint(0, MR) == 0): 
-                wih[i][j] = random.random() #random mutation
+                wih[i][j] = random.random()
             elif (random.randint(0, 1) == 0):
                 wih[i][j] = nn1.wih[i][j]
             else:
